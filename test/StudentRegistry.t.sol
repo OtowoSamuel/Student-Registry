@@ -8,7 +8,7 @@ interface IStudentRegistryEvents {
     event StudentRegistered(address indexed studentAddress, string name, uint8 age, string className);
 }
 
-contract StudentRegistryTest is Test, IStudentRegistryEvents{
+contract StudentRegistryTest is Test, IStudentRegistryEvents {
     StudentRegistry registry;
     address student1 = address(0x1);
     address student2 = address(0x2);
@@ -18,7 +18,7 @@ contract StudentRegistryTest is Test, IStudentRegistryEvents{
         registry = new StudentRegistry();
     }
 
-    function testDeployment() public view{
+    function testDeployment() public view {
         assertEq(registry.owner(), address(this), "Owner should be deployer");
     }
 
@@ -35,7 +35,7 @@ contract StudentRegistryTest is Test, IStudentRegistryEvents{
     function testCannotRegisterTwice() public {
         vm.prank(student1);
         registry.registerStudent("Alice", 20, "Math");
-        
+
         vm.expectRevert("Student already registered");
         vm.prank(student1);
         registry.registerStudent("Bob", 22, "Science");
@@ -70,20 +70,20 @@ contract StudentRegistryTest is Test, IStudentRegistryEvents{
         vm.prank(student2);
         registry.registerStudent("Bob", 22, "Science");
 
-        (string memory name1, , ) = registry.getStudent(student1);
-        (string memory name2, , ) = registry.getStudent(student2);
+        (string memory name1,,) = registry.getStudent(student1);
+        (string memory name2,,) = registry.getStudent(student2);
         assertEq(name1, "Alice");
         assertEq(name2, "Bob");
     }
 
     function testEventEmittedOnRegistration() public {
         vm.prank(student1);
-    
+
         vm.expectEmit(true, true, true, true);
-        emit StudentRegistered(student1, "Alice", 20, "Math");  // Note the 'registry.' prefix
+        emit StudentRegistered(student1, "Alice", 20, "Math"); // Note the 'registry.' prefix
 
         registry.registerStudent("Alice", 20, "Math");
-}
+    }
 
     function testDifferentStudentsWithSameNameCanRegister() public {
         vm.prank(student1);
@@ -91,8 +91,8 @@ contract StudentRegistryTest is Test, IStudentRegistryEvents{
         vm.prank(student2);
         registry.registerStudent("Charlie", 23, "Chemistry");
 
-        (string memory name1, uint8 age1, ) = registry.getStudent(student1);
-        (string memory name2, uint8 age2, ) = registry.getStudent(student2);
+        (string memory name1, uint8 age1,) = registry.getStudent(student1);
+        (string memory name2, uint8 age2,) = registry.getStudent(student2);
         assertEq(name1, "Charlie");
         assertEq(age1, 21);
         assertEq(name2, "Charlie");
@@ -113,10 +113,10 @@ contract StudentRegistryTest is Test, IStudentRegistryEvents{
         vm.prank(student3);
         registry.registerStudent("Frank", 22, "Geography");
 
-        (string memory name1, , ) = registry.getStudent(student1);
-        (string memory name2, , ) = registry.getStudent(student2);
-        (string memory name3, , ) = registry.getStudent(student3);
-        
+        (string memory name1,,) = registry.getStudent(student1);
+        (string memory name2,,) = registry.getStudent(student2);
+        (string memory name3,,) = registry.getStudent(student3);
+
         assertEq(name1, "David");
         assertEq(name2, "Emma");
         assertEq(name3, "Frank");
